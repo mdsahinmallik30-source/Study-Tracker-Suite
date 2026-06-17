@@ -1,22 +1,25 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: JEE Study Tracker API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: progress
+    description: Subject progress tracking
+  - name: daily-logs
+    description: Daily activity logs
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +27,184 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /progress:
+    get:
+      operationId: listProgress
+      tags: [progress]
+      summary: List all progress items
+      parameters:
+        - name: subject
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of progress items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProgressItem"
+    post:
+      operationId: createProgress
+      tags: [progress]
+      summary: Create a progress item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressItem"
+
+  /progress/summary:
+    get:
+      operationId: getProgressSummary
+      tags: [progress]
+      summary: Get progress summary per subject and category
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressSummary"
+
+  /progress/{id}:
+    patch:
+      operationId: updateProgress
+      tags: [progress]
+      summary: Update a progress item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProgressUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProgressItem"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteProgress
+      tags: [progress]
+      summary: Delete a progress item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /daily-logs:
+    get:
+      operationId: listDailyLogs
+      tags: [daily-logs]
+      summary: List daily logs
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of daily logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DailyLog"
+    post:
+      operationId: createDailyLog
+      tags: [daily-logs]
+      summary: Create or upsert a daily log
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyLogInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyLog"
+
+  /daily-logs/streak:
+    get:
+      operationId: getDailyStreak
+      tags: [daily-logs]
+      summary: Get current streak and completion stats
+      responses:
+        "200":
+          description: Streak info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreakInfo"
+
+  /daily-logs/{id}:
+    patch:
+      operationId: updateDailyLog
+      tags: [daily-logs]
+      summary: Update a daily log
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DailyLogUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyLog"
+        "404":
+          description: Not found
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +215,201 @@ components:
       required:
         - status
 
+    ProgressItem:
+      type: object
+      required: [id, subject, category, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        subject:
+          type: string
+          description: "physics | chemistry | maths"
+        category:
+          type: string
+          description: "dpp | jee_replica | practice_sheet | chapterwise_test | cengage | exercise_book"
+        subCategory:
+          type: ["string", "null"]
+          description: "For chapterwise_test: part1..part5"
+        chapter:
+          type: ["string", "null"]
+        totalQuestions:
+          type: ["integer", "null"]
+        completedQuestions:
+          type: ["integer", "null"]
+        score:
+          type: ["number", "null"]
+          description: Score as percentage 0-100
+        status:
+          type: string
+          description: "not_started | in_progress | completed"
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    ProgressInput:
+      type: object
+      required: [subject, category, status]
+      properties:
+        subject:
+          type: string
+        category:
+          type: string
+        subCategory:
+          type: ["string", "null"]
+        chapter:
+          type: ["string", "null"]
+        totalQuestions:
+          type: ["integer", "null"]
+        completedQuestions:
+          type: ["integer", "null"]
+        score:
+          type: ["number", "null"]
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+
+    ProgressUpdate:
+      type: object
+      properties:
+        subCategory:
+          type: ["string", "null"]
+        chapter:
+          type: ["string", "null"]
+        totalQuestions:
+          type: ["integer", "null"]
+        completedQuestions:
+          type: ["integer", "null"]
+        score:
+          type: ["number", "null"]
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+
+    SubjectSummary:
+      type: object
+      required: [subject, totalItems, completedItems, inProgressItems, avgScore]
+      properties:
+        subject:
+          type: string
+        totalItems:
+          type: integer
+        completedItems:
+          type: integer
+        inProgressItems:
+          type: integer
+        avgScore:
+          type: ["number", "null"]
+        byCategory:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategorySummary"
+
+    CategorySummary:
+      type: object
+      required: [category, totalItems, completedItems]
+      properties:
+        category:
+          type: string
+        totalItems:
+          type: integer
+        completedItems:
+          type: integer
+        avgScore:
+          type: ["number", "null"]
+
+    ProgressSummary:
+      type: object
+      required: [subjects, overallCompleted, overallTotal]
+      properties:
+        subjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubjectSummary"
+        overallCompleted:
+          type: integer
+        overallTotal:
+          type: integer
+
+    DailyLog:
+      type: object
+      required: [id, date, lectures, dpp, revision, homework, createdAt]
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          description: ISO date string YYYY-MM-DD
+        lectures:
+          type: boolean
+        dpp:
+          type: boolean
+        revision:
+          type: boolean
+        homework:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    DailyLogInput:
+      type: object
+      required: [date]
+      properties:
+        date:
+          type: string
+        lectures:
+          type: boolean
+        dpp:
+          type: boolean
+        revision:
+          type: boolean
+        homework:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+
+    DailyLogUpdate:
+      type: object
+      properties:
+        lectures:
+          type: boolean
+        dpp:
+          type: boolean
+        revision:
+          type: boolean
+        homework:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+
+    StreakInfo:
+      type: object
+      required: [currentStreak, longestStreak, totalDaysLogged, last30DaysCompletion]
+      properties:
+        currentStreak:
+          type: integer
+        longestStreak:
+          type: integer
+        totalDaysLogged:
+          type: integer
+        last30DaysCompletion:
+          type: array
+          items:
+            $ref: "#/components/schemas/DayCompletion"
+
+    DayCompletion:
+      type: object
+      required: [date, completedCount, totalCount]
+      properties:
+        date:
+          type: string
+        completedCount:
+          type: integer
+        totalCount:
+          type: integer
