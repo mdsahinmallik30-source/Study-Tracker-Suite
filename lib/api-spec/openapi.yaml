@@ -124,6 +124,176 @@ paths:
         "404":
           description: Not found
 
+  /tests:
+    get:
+      operationId: listTests
+      tags: [tests]
+      summary: List all test analyses
+      responses:
+        "200":
+          description: List of tests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TestAnalysis"
+    post:
+      operationId: createTest
+      tags: [tests]
+      summary: Create a test analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestAnalysis"
+
+  /tests/{id}:
+    patch:
+      operationId: updateTest
+      tags: [tests]
+      summary: Update a test analysis
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TestAnalysis"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteTest
+      tags: [tests]
+      summary: Delete a test analysis
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /tests/{testId}/questions:
+    get:
+      operationId: listTestQuestions
+      tags: [tests]
+      summary: List wrong questions for a test
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WrongQuestion"
+    post:
+      operationId: createTestQuestion
+      tags: [tests]
+      summary: Add a wrong question to a test
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WrongQuestionInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WrongQuestion"
+
+  /tests/{testId}/questions/{id}:
+    patch:
+      operationId: updateTestQuestion
+      tags: [tests]
+      summary: Update a wrong question
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WrongQuestionUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WrongQuestion"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteTestQuestion
+      tags: [tests]
+      summary: Delete a wrong question
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
   /daily-logs:
     get:
       operationId: listDailyLogs
@@ -207,6 +377,132 @@ paths:
 
 components:
   schemas:
+    TestAnalysis:
+      type: object
+      required: [id, title, subject, date, revised, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subject:
+          type: string
+          description: "physics | chemistry | maths | mixed"
+        date:
+          type: string
+        score:
+          type: ["number", "null"]
+        maxScore:
+          type: ["number", "null"]
+        timeTaken:
+          type: ["integer", "null"]
+          description: "Minutes"
+        revised:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    TestInput:
+      type: object
+      required: [title, subject, date]
+      properties:
+        title:
+          type: string
+        subject:
+          type: string
+        date:
+          type: string
+        score:
+          type: ["number", "null"]
+        maxScore:
+          type: ["number", "null"]
+        timeTaken:
+          type: ["integer", "null"]
+        revised:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+
+    TestUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        subject:
+          type: string
+        date:
+          type: string
+        score:
+          type: ["number", "null"]
+        maxScore:
+          type: ["number", "null"]
+        timeTaken:
+          type: ["integer", "null"]
+        revised:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+
+    WrongQuestion:
+      type: object
+      required: [id, testId, questionText, conceptualError, calculationMistake, unknown, readingError, takeaway, createdAt]
+      properties:
+        id:
+          type: integer
+        testId:
+          type: integer
+        questionText:
+          type: string
+        conceptualError:
+          type: boolean
+        calculationMistake:
+          type: boolean
+        unknown:
+          type: boolean
+        readingError:
+          type: boolean
+        takeaway:
+          type: string
+        createdAt:
+          type: string
+
+    WrongQuestionInput:
+      type: object
+      required: []
+      properties:
+        questionText:
+          type: string
+        conceptualError:
+          type: boolean
+        calculationMistake:
+          type: boolean
+        unknown:
+          type: boolean
+        readingError:
+          type: boolean
+        takeaway:
+          type: string
+
+    WrongQuestionUpdate:
+      type: object
+      properties:
+        questionText:
+          type: string
+        conceptualError:
+          type: boolean
+        calculationMistake:
+          type: boolean
+        unknown:
+          type: boolean
+        readingError:
+          type: boolean
+        takeaway:
+          type: string
+
     HealthStatus:
       type: object
       properties:

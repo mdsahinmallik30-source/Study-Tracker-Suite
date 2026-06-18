@@ -5,6 +5,88 @@
  * JEE Study Tracker API
  * OpenAPI spec version: 0.1.0
  */
+export interface TestAnalysis {
+  id: number;
+  title: string;
+  /** physics | chemistry | maths | mixed */
+  subject: string;
+  date: string;
+  /** @nullable */
+  score?: number | null;
+  /** @nullable */
+  maxScore?: number | null;
+  /**
+     * Minutes
+     * @nullable
+     */
+  timeTaken?: number | null;
+  revised: boolean;
+  /** @nullable */
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TestInput {
+  title: string;
+  subject: string;
+  date: string;
+  /** @nullable */
+  score?: number | null;
+  /** @nullable */
+  maxScore?: number | null;
+  /** @nullable */
+  timeTaken?: number | null;
+  revised?: boolean;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export interface TestUpdate {
+  title?: string;
+  subject?: string;
+  date?: string;
+  /** @nullable */
+  score?: number | null;
+  /** @nullable */
+  maxScore?: number | null;
+  /** @nullable */
+  timeTaken?: number | null;
+  revised?: boolean;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export interface WrongQuestion {
+  id: number;
+  testId: number;
+  questionText: string;
+  conceptualError: boolean;
+  calculationMistake: boolean;
+  unknown: boolean;
+  readingError: boolean;
+  takeaway: string;
+  createdAt: string;
+}
+
+export interface WrongQuestionInput {
+  questionText?: string;
+  conceptualError?: boolean;
+  calculationMistake?: boolean;
+  unknown?: boolean;
+  readingError?: boolean;
+  takeaway?: string;
+}
+
+export interface WrongQuestionUpdate {
+  questionText?: string;
+  conceptualError?: boolean;
+  calculationMistake?: boolean;
+  unknown?: boolean;
+  readingError?: boolean;
+  takeaway?: string;
+}
+
 export interface HealthStatus {
   status: string;
 }

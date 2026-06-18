@@ -30,7 +30,13 @@ import type {
   ProgressItem,
   ProgressSummary,
   ProgressUpdate,
-  StreakInfo
+  StreakInfo,
+  TestAnalysis,
+  TestInput,
+  TestUpdate,
+  WrongQuestion,
+  WrongQuestionInput,
+  WrongQuestionUpdate
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -494,6 +500,591 @@ export const useDeleteProgress = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getDeleteProgressMutationOptions(options));
+    }
+
+export const getListTestsUrl = () => {
+
+
+
+
+  return `/api/tests`
+}
+
+/**
+ * @summary List all test analyses
+ */
+export const listTests = async ( options?: RequestInit): Promise<TestAnalysis[]> => {
+
+  return customFetch<TestAnalysis[]>(getListTestsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTestsQueryKey = () => {
+    return [
+    `/api/tests`
+    ] as const;
+    }
+
+
+export const getListTestsQueryOptions = <TData = Awaited<ReturnType<typeof listTests>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTests>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTestsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTests>>> = ({ signal }) => listTests({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTests>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListTestsQueryResult = NonNullable<Awaited<ReturnType<typeof listTests>>>
+export type ListTestsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List all test analyses
+ */
+
+export function useListTests<TData = Awaited<ReturnType<typeof listTests>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTests>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListTestsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateTestUrl = () => {
+
+
+
+
+  return `/api/tests`
+}
+
+/**
+ * @summary Create a test analysis
+ */
+export const createTest = async (testInput: TestInput, options?: RequestInit): Promise<TestAnalysis> => {
+
+  return customFetch<TestAnalysis>(getCreateTestUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      testInput,)
+  }
+);}
+
+
+
+
+export const getCreateTestMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTest>>, TError,{data: BodyType<TestInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTest>>, TError,{data: BodyType<TestInput>}, TContext> => {
+
+const mutationKey = ['createTest'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTest>>, {data: BodyType<TestInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createTest(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTestMutationResult = NonNullable<Awaited<ReturnType<typeof createTest>>>
+    export type CreateTestMutationBody = BodyType<TestInput>
+    export type CreateTestMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Create a test analysis
+ */
+export const useCreateTest = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTest>>, TError,{data: BodyType<TestInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createTest>>,
+        TError,
+        {data: BodyType<TestInput>},
+        TContext
+      > => {
+      return useMutation(getCreateTestMutationOptions(options));
+    }
+
+export const getUpdateTestUrl = (id: number,) => {
+
+
+
+
+  return `/api/tests/${id}`
+}
+
+/**
+ * @summary Update a test analysis
+ */
+export const updateTest = async (id: number,
+    testUpdate: TestUpdate, options?: RequestInit): Promise<TestAnalysis> => {
+
+  return customFetch<TestAnalysis>(getUpdateTestUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      testUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateTestMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTest>>, TError,{id: number;data: BodyType<TestUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTest>>, TError,{id: number;data: BodyType<TestUpdate>}, TContext> => {
+
+const mutationKey = ['updateTest'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTest>>, {id: number;data: BodyType<TestUpdate>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateTest(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTestMutationResult = NonNullable<Awaited<ReturnType<typeof updateTest>>>
+    export type UpdateTestMutationBody = BodyType<TestUpdate>
+    export type UpdateTestMutationError = ErrorType<void>
+
+    /**
+ * @summary Update a test analysis
+ */
+export const useUpdateTest = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTest>>, TError,{id: number;data: BodyType<TestUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateTest>>,
+        TError,
+        {id: number;data: BodyType<TestUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateTestMutationOptions(options));
+    }
+
+export const getDeleteTestUrl = (id: number,) => {
+
+
+
+
+  return `/api/tests/${id}`
+}
+
+/**
+ * @summary Delete a test analysis
+ */
+export const deleteTest = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteTestUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteTestMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTest>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTest>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteTest'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTest>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteTest(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTestMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTest>>>
+
+    export type DeleteTestMutationError = ErrorType<void>
+
+    /**
+ * @summary Delete a test analysis
+ */
+export const useDeleteTest = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTest>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTest>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteTestMutationOptions(options));
+    }
+
+export const getListTestQuestionsUrl = (testId: number,) => {
+
+
+
+
+  return `/api/tests/${testId}/questions`
+}
+
+/**
+ * @summary List wrong questions for a test
+ */
+export const listTestQuestions = async (testId: number, options?: RequestInit): Promise<WrongQuestion[]> => {
+
+  return customFetch<WrongQuestion[]>(getListTestQuestionsUrl(testId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListTestQuestionsQueryKey = (testId: number,) => {
+    return [
+    `/api/tests/${testId}/questions`
+    ] as const;
+    }
+
+
+export const getListTestQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof listTestQuestions>>, TError = ErrorType<unknown>>(testId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTestQuestions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListTestQuestionsQueryKey(testId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTestQuestions>>> = ({ signal }) => listTestQuestions(testId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(testId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listTestQuestions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListTestQuestionsQueryResult = NonNullable<Awaited<ReturnType<typeof listTestQuestions>>>
+export type ListTestQuestionsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List wrong questions for a test
+ */
+
+export function useListTestQuestions<TData = Awaited<ReturnType<typeof listTestQuestions>>, TError = ErrorType<unknown>>(
+ testId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listTestQuestions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListTestQuestionsQueryOptions(testId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreateTestQuestionUrl = (testId: number,) => {
+
+
+
+
+  return `/api/tests/${testId}/questions`
+}
+
+/**
+ * @summary Add a wrong question to a test
+ */
+export const createTestQuestion = async (testId: number,
+    wrongQuestionInput: WrongQuestionInput, options?: RequestInit): Promise<WrongQuestion> => {
+
+  return customFetch<WrongQuestion>(getCreateTestQuestionUrl(testId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      wrongQuestionInput,)
+  }
+);}
+
+
+
+
+export const getCreateTestQuestionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTestQuestion>>, TError,{testId: number;data: BodyType<WrongQuestionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTestQuestion>>, TError,{testId: number;data: BodyType<WrongQuestionInput>}, TContext> => {
+
+const mutationKey = ['createTestQuestion'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTestQuestion>>, {testId: number;data: BodyType<WrongQuestionInput>}> = (props) => {
+          const {testId,data} = props ?? {};
+
+          return  createTestQuestion(testId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTestQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof createTestQuestion>>>
+    export type CreateTestQuestionMutationBody = BodyType<WrongQuestionInput>
+    export type CreateTestQuestionMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Add a wrong question to a test
+ */
+export const useCreateTestQuestion = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTestQuestion>>, TError,{testId: number;data: BodyType<WrongQuestionInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createTestQuestion>>,
+        TError,
+        {testId: number;data: BodyType<WrongQuestionInput>},
+        TContext
+      > => {
+      return useMutation(getCreateTestQuestionMutationOptions(options));
+    }
+
+export const getUpdateTestQuestionUrl = (testId: number,
+    id: number,) => {
+
+
+
+
+  return `/api/tests/${testId}/questions/${id}`
+}
+
+/**
+ * @summary Update a wrong question
+ */
+export const updateTestQuestion = async (testId: number,
+    id: number,
+    wrongQuestionUpdate: WrongQuestionUpdate, options?: RequestInit): Promise<WrongQuestion> => {
+
+  return customFetch<WrongQuestion>(getUpdateTestQuestionUrl(testId,id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      wrongQuestionUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateTestQuestionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTestQuestion>>, TError,{testId: number;id: number;data: BodyType<WrongQuestionUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTestQuestion>>, TError,{testId: number;id: number;data: BodyType<WrongQuestionUpdate>}, TContext> => {
+
+const mutationKey = ['updateTestQuestion'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTestQuestion>>, {testId: number;id: number;data: BodyType<WrongQuestionUpdate>}> = (props) => {
+          const {testId,id,data} = props ?? {};
+
+          return  updateTestQuestion(testId,id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTestQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof updateTestQuestion>>>
+    export type UpdateTestQuestionMutationBody = BodyType<WrongQuestionUpdate>
+    export type UpdateTestQuestionMutationError = ErrorType<void>
+
+    /**
+ * @summary Update a wrong question
+ */
+export const useUpdateTestQuestion = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTestQuestion>>, TError,{testId: number;id: number;data: BodyType<WrongQuestionUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateTestQuestion>>,
+        TError,
+        {testId: number;id: number;data: BodyType<WrongQuestionUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateTestQuestionMutationOptions(options));
+    }
+
+export const getDeleteTestQuestionUrl = (testId: number,
+    id: number,) => {
+
+
+
+
+  return `/api/tests/${testId}/questions/${id}`
+}
+
+/**
+ * @summary Delete a wrong question
+ */
+export const deleteTestQuestion = async (testId: number,
+    id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeleteTestQuestionUrl(testId,id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteTestQuestionMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTestQuestion>>, TError,{testId: number;id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTestQuestion>>, TError,{testId: number;id: number}, TContext> => {
+
+const mutationKey = ['deleteTestQuestion'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTestQuestion>>, {testId: number;id: number}> = (props) => {
+          const {testId,id} = props ?? {};
+
+          return  deleteTestQuestion(testId,id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTestQuestionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTestQuestion>>>
+
+    export type DeleteTestQuestionMutationError = ErrorType<void>
+
+    /**
+ * @summary Delete a wrong question
+ */
+export const useDeleteTestQuestion = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTestQuestion>>, TError,{testId: number;id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTestQuestion>>,
+        TError,
+        {testId: number;id: number},
+        TContext
+      > => {
+      return useMutation(getDeleteTestQuestionMutationOptions(options));
     }
 
 export const getListDailyLogsUrl = (params?: ListDailyLogsParams,) => {

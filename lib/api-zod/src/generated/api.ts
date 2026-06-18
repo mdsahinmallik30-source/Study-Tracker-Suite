@@ -121,6 +121,158 @@ export const DeleteProgressParams = zod.object({
 
 
 /**
+ * @summary List all test analyses
+ */
+export const ListTestsResponseItem = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "subject": zod.string().describe('physics | chemistry | maths | mixed'),
+  "date": zod.string(),
+  "score": zod.number().nullish(),
+  "maxScore": zod.number().nullish(),
+  "timeTaken": zod.number().nullish().describe('Minutes'),
+  "revised": zod.boolean(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const ListTestsResponse = zod.array(ListTestsResponseItem)
+
+
+/**
+ * @summary Create a test analysis
+ */
+export const CreateTestBody = zod.object({
+  "title": zod.string(),
+  "subject": zod.string(),
+  "date": zod.string(),
+  "score": zod.number().nullish(),
+  "maxScore": zod.number().nullish(),
+  "timeTaken": zod.number().nullish(),
+  "revised": zod.boolean().optional(),
+  "notes": zod.string().nullish()
+})
+
+
+/**
+ * @summary Update a test analysis
+ */
+export const UpdateTestParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateTestBody = zod.object({
+  "title": zod.string().optional(),
+  "subject": zod.string().optional(),
+  "date": zod.string().optional(),
+  "score": zod.number().nullish(),
+  "maxScore": zod.number().nullish(),
+  "timeTaken": zod.number().nullish(),
+  "revised": zod.boolean().optional(),
+  "notes": zod.string().nullish()
+})
+
+export const UpdateTestResponse = zod.object({
+  "id": zod.number(),
+  "title": zod.string(),
+  "subject": zod.string().describe('physics | chemistry | maths | mixed'),
+  "date": zod.string(),
+  "score": zod.number().nullish(),
+  "maxScore": zod.number().nullish(),
+  "timeTaken": zod.number().nullish().describe('Minutes'),
+  "revised": zod.boolean(),
+  "notes": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a test analysis
+ */
+export const DeleteTestParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
+ * @summary List wrong questions for a test
+ */
+export const ListTestQuestionsParams = zod.object({
+  "testId": zod.coerce.number()
+})
+
+export const ListTestQuestionsResponseItem = zod.object({
+  "id": zod.number(),
+  "testId": zod.number(),
+  "questionText": zod.string(),
+  "conceptualError": zod.boolean(),
+  "calculationMistake": zod.boolean(),
+  "unknown": zod.boolean(),
+  "readingError": zod.boolean(),
+  "takeaway": zod.string(),
+  "createdAt": zod.string()
+})
+export const ListTestQuestionsResponse = zod.array(ListTestQuestionsResponseItem)
+
+
+/**
+ * @summary Add a wrong question to a test
+ */
+export const CreateTestQuestionParams = zod.object({
+  "testId": zod.coerce.number()
+})
+
+export const CreateTestQuestionBody = zod.object({
+  "questionText": zod.string().optional(),
+  "conceptualError": zod.boolean().optional(),
+  "calculationMistake": zod.boolean().optional(),
+  "unknown": zod.boolean().optional(),
+  "readingError": zod.boolean().optional(),
+  "takeaway": zod.string().optional()
+})
+
+
+/**
+ * @summary Update a wrong question
+ */
+export const UpdateTestQuestionParams = zod.object({
+  "testId": zod.coerce.number(),
+  "id": zod.coerce.number()
+})
+
+export const UpdateTestQuestionBody = zod.object({
+  "questionText": zod.string().optional(),
+  "conceptualError": zod.boolean().optional(),
+  "calculationMistake": zod.boolean().optional(),
+  "unknown": zod.boolean().optional(),
+  "readingError": zod.boolean().optional(),
+  "takeaway": zod.string().optional()
+})
+
+export const UpdateTestQuestionResponse = zod.object({
+  "id": zod.number(),
+  "testId": zod.number(),
+  "questionText": zod.string(),
+  "conceptualError": zod.boolean(),
+  "calculationMistake": zod.boolean(),
+  "unknown": zod.boolean(),
+  "readingError": zod.boolean(),
+  "takeaway": zod.string(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a wrong question
+ */
+export const DeleteTestQuestionParams = zod.object({
+  "testId": zod.coerce.number(),
+  "id": zod.coerce.number()
+})
+
+
+/**
  * @summary List daily logs
  */
 export const ListDailyLogsQueryParams = zod.object({
