@@ -1,4 +1,4 @@
-import { pgTable, serial, text, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -9,6 +9,7 @@ export const dailyLogs = pgTable("daily_logs", {
   dpp: boolean("dpp").notNull().default(false),
   revision: boolean("revision").notNull().default(false),
   homework: boolean("homework").notNull().default(false),
+  customTasks: jsonb("custom_tasks").$type<{ id: string; label: string; done: boolean }[]>().default([]),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

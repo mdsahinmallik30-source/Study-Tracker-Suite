@@ -5,6 +5,7 @@
  * JEE Study Tracker API
  * OpenAPI spec version: 0.1.0
  */
+import type { CustomTask } from './customTask';
 
 export interface DailyLogInput {
   date: string;
@@ -12,6 +13,7 @@ export interface DailyLogInput {
   dpp?: boolean;
   revision?: boolean;
   homework?: boolean;
+  customTasks?: CustomTask[];
   /** @nullable */
   notes?: string | null;
 }

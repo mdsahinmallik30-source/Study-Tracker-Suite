@@ -10,6 +10,14 @@ import {
 
 const router = Router();
 
+function serializeLog(log: typeof dailyLogs.$inferSelect) {
+  return {
+    ...log,
+    customTasks: (log.customTasks as { id: string; label: string; done: boolean }[] | null) ?? [],
+    createdAt: log.createdAt.toISOString(),
+  };
+}
+
 router.get("/daily-logs", async (req, res) => {
   const query = ListDailyLogsQueryParams.safeParse(req.query);
   if (!query.success) {
@@ -17,21 +25,14 @@ router.get("/daily-logs", async (req, res) => {
   }
 
   const conditions = [];
-  if (query.data.from) {
-    conditions.push(gte(dailyLogs.date, query.data.from));
-  }
-  if (query.data.to) {
-    conditions.push(lte(dailyLogs.date, query.data.to));
-  }
+  if (query.data.from) conditions.push(gte(dailyLogs.date, query.data.from));
+  if (query.data.to) conditions.push(lte(dailyLogs.date, query.data.to));
 
   const logs = conditions.length > 0
     ? await db.select().from(dailyLogs).where(and(...conditions)).orderBy(desc(dailyLogs.date))
     : await db.select().from(dailyLogs).orderBy(desc(dailyLogs.date));
 
-  return res.json(logs.map(log => ({
-    ...log,
-    createdAt: log.createdAt.toISOString(),
-  })));
+  return res.json(logs.map(serializeLog));
 });
 
 router.post("/daily-logs", async (req, res) => {
@@ -48,11 +49,12 @@ router.post("/daily-logs", async (req, res) => {
         dpp: body.data.dpp ?? false,
         revision: body.data.revision ?? false,
         homework: body.data.homework ?? false,
+        customTasks: (body.data.customTasks as { id: string; label: string; done: boolean }[] | undefined) ?? existing[0].customTasks ?? [],
         notes: body.data.notes ?? null,
       })
       .where(eq(dailyLogs.date, body.data.date))
       .returning();
-    return res.status(201).json({ ...updated, createdAt: updated.createdAt.toISOString() });
+    return res.status(201).json(serializeLog(updated));
   }
 
   const [log] = await db.insert(dailyLogs).values({
@@ -61,10 +63,11 @@ router.post("/daily-logs", async (req, res) => {
     dpp: body.data.dpp ?? false,
     revision: body.data.revision ?? false,
     homework: body.data.homework ?? false,
+    customTasks: (body.data.customTasks as { id: string; label: string; done: boolean }[] | undefined) ?? [],
     notes: body.data.notes ?? null,
   }).returning();
 
-  return res.status(201).json({ ...log, createdAt: log.createdAt.toISOString() });
+  return res.status(201).json(serializeLog(log));
 });
 
 router.get("/daily-logs/streak", async (_req, res) => {
@@ -81,7 +84,7 @@ router.get("/daily-logs/streak", async (_req, res) => {
 
   const logDates = new Set(allLogs.map(l => l.date));
 
-  let checkDate = new Date(today);
+  const checkDate = new Date(today);
   let streakBroken = false;
   while (!streakBroken) {
     const dateStr = checkDate.toISOString().split("T")[0];
@@ -117,10 +120,12 @@ router.get("/daily-logs/streak", async (_req, res) => {
   for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
     const dateStr = d.toISOString().split("T")[0];
     const log = allLogs.find(l => l.date === dateStr);
-    const completedCount = log
-      ? [log.lectures, log.dpp, log.revision, log.homework].filter(Boolean).length
-      : 0;
-    last30DaysCompletion.push({ date: dateStr, completedCount, totalCount: 4 });
+    const customTasksArr = (log?.customTasks as { id: string; label: string; done: boolean }[] | null) ?? [];
+    const customDone = customTasksArr.filter(t => t.done).length;
+    const defaultDone = log ? [log.lectures, log.dpp, log.revision, log.homework].filter(Boolean).length : 0;
+    const completedCount = defaultDone + customDone;
+    const totalCount = 4 + customTasksArr.length;
+    last30DaysCompletion.push({ date: dateStr, completedCount, totalCount });
   }
 
   return res.json({ currentStreak, longestStreak, totalDaysLogged, last30DaysCompletion });
@@ -147,6 +152,7 @@ router.patch("/daily-logs/:id", async (req, res) => {
   if (body.data.dpp !== undefined) updateData.dpp = body.data.dpp;
   if (body.data.revision !== undefined) updateData.revision = body.data.revision;
   if (body.data.homework !== undefined) updateData.homework = body.data.homework;
+  if (body.data.customTasks !== undefined) updateData.customTasks = body.data.customTasks as { id: string; label: string; done: boolean }[];
   if (body.data.notes !== undefined) updateData.notes = body.data.notes ?? null;
 
   const [updated] = await db.update(dailyLogs)
@@ -154,7 +160,7 @@ router.patch("/daily-logs/:id", async (req, res) => {
     .where(eq(dailyLogs.id, params.data.id))
     .returning();
 
-  return res.json({ ...updated, createdAt: updated.createdAt.toISOString() });
+  return res.json(serializeLog(updated));
 });
 
 export default router;

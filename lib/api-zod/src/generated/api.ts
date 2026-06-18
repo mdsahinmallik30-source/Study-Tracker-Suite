@@ -135,6 +135,11 @@ export const ListDailyLogsResponseItem = zod.object({
   "dpp": zod.boolean(),
   "revision": zod.boolean(),
   "homework": zod.boolean(),
+  "customTasks": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "done": zod.boolean()
+})).optional(),
   "notes": zod.string().nullish(),
   "createdAt": zod.string()
 })
@@ -150,6 +155,11 @@ export const CreateDailyLogBody = zod.object({
   "dpp": zod.boolean().optional(),
   "revision": zod.boolean().optional(),
   "homework": zod.boolean().optional(),
+  "customTasks": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "done": zod.boolean()
+})).optional(),
   "notes": zod.string().nullish()
 })
 
@@ -181,6 +191,11 @@ export const UpdateDailyLogBody = zod.object({
   "dpp": zod.boolean().optional(),
   "revision": zod.boolean().optional(),
   "homework": zod.boolean().optional(),
+  "customTasks": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "done": zod.boolean()
+})).optional(),
   "notes": zod.string().nullish()
 })
 
@@ -191,6 +206,11 @@ export const UpdateDailyLogResponse = zod.object({
   "dpp": zod.boolean(),
   "revision": zod.boolean(),
   "homework": zod.boolean(),
+  "customTasks": zod.array(zod.object({
+  "id": zod.string(),
+  "label": zod.string(),
+  "done": zod.boolean()
+})).optional(),
   "notes": zod.string().nullish(),
   "createdAt": zod.string()
 })

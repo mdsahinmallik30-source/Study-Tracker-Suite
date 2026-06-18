@@ -7,6 +7,7 @@
  */
 
 export * from './categorySummary';
+export * from './customTask';
 export * from './dailyLog';
 export * from './dailyLogInput';
 export * from './dailyLogUpdate';

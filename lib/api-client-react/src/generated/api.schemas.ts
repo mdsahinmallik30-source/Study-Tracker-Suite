@@ -97,6 +97,12 @@ export interface ProgressSummary {
   overallTotal: number;
 }
 
+export interface CustomTask {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
 export interface DailyLog {
   id: number;
   /** ISO date string YYYY-MM-DD */
@@ -105,6 +111,7 @@ export interface DailyLog {
   dpp: boolean;
   revision: boolean;
   homework: boolean;
+  customTasks?: CustomTask[];
   /** @nullable */
   notes?: string | null;
   createdAt: string;
@@ -116,6 +123,7 @@ export interface DailyLogInput {
   dpp?: boolean;
   revision?: boolean;
   homework?: boolean;
+  customTasks?: CustomTask[];
   /** @nullable */
   notes?: string | null;
 }
@@ -125,6 +133,7 @@ export interface DailyLogUpdate {
   dpp?: boolean;
   revision?: boolean;
   homework?: boolean;
+  customTasks?: CustomTask[];
   /** @nullable */
   notes?: string | null;
 }

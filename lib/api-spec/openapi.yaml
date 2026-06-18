@@ -335,6 +335,17 @@ components:
         overallTotal:
           type: integer
 
+    CustomTask:
+      type: object
+      required: [id, label, done]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        done:
+          type: boolean
+
     DailyLog:
       type: object
       required: [id, date, lectures, dpp, revision, homework, createdAt]
@@ -352,6 +363,10 @@ components:
           type: boolean
         homework:
           type: boolean
+        customTasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomTask"
         notes:
           type: ["string", "null"]
         createdAt:
@@ -371,6 +386,10 @@ components:
           type: boolean
         homework:
           type: boolean
+        customTasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomTask"
         notes:
           type: ["string", "null"]
 
@@ -385,6 +404,10 @@ components:
           type: boolean
         homework:
           type: boolean
+        customTasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomTask"
         notes:
           type: ["string", "null"]
 
