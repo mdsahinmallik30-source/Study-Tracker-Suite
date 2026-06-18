@@ -121,6 +121,76 @@ export const DeleteProgressParams = zod.object({
 
 
 /**
+ * @summary List all subject weekly targets
+ */
+export const ListSubjectTargetsResponseItem = zod.object({
+  "id": zod.number(),
+  "subject": zod.string(),
+  "weeklyTarget": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const ListSubjectTargetsResponse = zod.array(ListSubjectTargetsResponseItem)
+
+
+/**
+ * @summary Create or update a subject weekly target
+ */
+export const UpsertSubjectTargetBody = zod.object({
+  "subject": zod.string(),
+  "weeklyTarget": zod.number()
+})
+
+export const UpsertSubjectTargetResponse = zod.object({
+  "id": zod.number(),
+  "subject": zod.string(),
+  "weeklyTarget": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Get weekly chapter completion progress per subject
+ */
+export const GetWeeklyProgressResponse = zod.object({
+  "subjects": zod.array(zod.object({
+  "subject": zod.string(),
+  "target": zod.number(),
+  "completed": zod.number(),
+  "weekStart": zod.string(),
+  "weekEnd": zod.string()
+})),
+  "weekStart": zod.string(),
+  "weekEnd": zod.string()
+})
+
+
+/**
+ * @summary Get error type statistics grouped by month
+ */
+export const GetTestErrorStatsResponseItem = zod.object({
+  "month": zod.string().describe('YYYY-MM'),
+  "conceptualError": zod.number(),
+  "calculationMistake": zod.number(),
+  "unknown": zod.number(),
+  "readingError": zod.number(),
+  "total": zod.number()
+})
+export const GetTestErrorStatsResponse = zod.array(GetTestErrorStatsResponseItem)
+
+
+/**
+ * @summary Get today's motivational quote
+ */
+export const GetDailyQuoteResponse = zod.object({
+  "text": zod.string(),
+  "author": zod.string(),
+  "date": zod.string()
+})
+
+
+/**
  * @summary List all test analyses
  */
 export const ListTestsResponseItem = zod.object({

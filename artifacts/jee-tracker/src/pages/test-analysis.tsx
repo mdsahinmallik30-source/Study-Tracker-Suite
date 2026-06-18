@@ -177,7 +177,7 @@ function TestCard({ test, isOpen, onToggle, onDelete }: {
 }) {
   const queryClient = useQueryClient();
   const updateTest = useUpdateTest();
-  const { data: questions } = useListTestQuestions(test.id, { query: { enabled: isOpen } });
+  const { data: questions } = useListTestQuestions(test.id, { query: { enabled: isOpen, queryKey: getListTestQuestionsQueryKey(test.id) } });
 
   const invalidateTests = () => queryClient.invalidateQueries({ queryKey: getListTestsQueryKey() });
 

@@ -5,6 +5,49 @@
  * JEE Study Tracker API
  * OpenAPI spec version: 0.1.0
  */
+export interface SubjectTarget {
+  id: number;
+  subject: string;
+  weeklyTarget: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubjectTargetInput {
+  subject: string;
+  weeklyTarget: number;
+}
+
+export interface SubjectWeeklyProgress {
+  subject: string;
+  target: number;
+  completed: number;
+  weekStart: string;
+  weekEnd: string;
+}
+
+export interface WeeklyProgressSummary {
+  subjects: SubjectWeeklyProgress[];
+  weekStart: string;
+  weekEnd: string;
+}
+
+export interface ErrorStat {
+  /** YYYY-MM */
+  month: string;
+  conceptualError: number;
+  calculationMistake: number;
+  unknown: number;
+  readingError: number;
+  total: number;
+}
+
+export interface DailyQuote {
+  text: string;
+  author: string;
+  date: string;
+}
+
 export interface TestAnalysis {
   id: number;
   title: string;

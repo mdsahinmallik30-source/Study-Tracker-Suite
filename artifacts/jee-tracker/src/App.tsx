@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import Progress from "@/pages/progress";
 import Daily from "@/pages/daily";
 import TestAnalysis from "@/pages/test-analysis";
+import Motivation from "@/pages/motivation";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +27,7 @@ function Router() {
         <Route path="/progress" component={Progress} />
         <Route path="/daily" component={Daily} />
         <Route path="/tests" component={TestAnalysis} />
+        <Route path="/motivation" component={Motivation} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

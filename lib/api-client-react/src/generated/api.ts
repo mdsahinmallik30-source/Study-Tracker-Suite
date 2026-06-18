@@ -23,6 +23,8 @@ import type {
   DailyLog,
   DailyLogInput,
   DailyLogUpdate,
+  DailyQuote,
+  ErrorStat,
   HealthStatus,
   ListDailyLogsParams,
   ListProgressParams,
@@ -31,9 +33,12 @@ import type {
   ProgressSummary,
   ProgressUpdate,
   StreakInfo,
+  SubjectTarget,
+  SubjectTargetInput,
   TestAnalysis,
   TestInput,
   TestUpdate,
+  WeeklyProgressSummary,
   WrongQuestion,
   WrongQuestionInput,
   WrongQuestionUpdate
@@ -501,6 +506,385 @@ export const useDeleteProgress = <TError = ErrorType<void>,
       > => {
       return useMutation(getDeleteProgressMutationOptions(options));
     }
+
+export const getListSubjectTargetsUrl = () => {
+
+
+
+
+  return `/api/subject-targets`
+}
+
+/**
+ * @summary List all subject weekly targets
+ */
+export const listSubjectTargets = async ( options?: RequestInit): Promise<SubjectTarget[]> => {
+
+  return customFetch<SubjectTarget[]>(getListSubjectTargetsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSubjectTargetsQueryKey = () => {
+    return [
+    `/api/subject-targets`
+    ] as const;
+    }
+
+
+export const getListSubjectTargetsQueryOptions = <TData = Awaited<ReturnType<typeof listSubjectTargets>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSubjectTargets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSubjectTargetsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSubjectTargets>>> = ({ signal }) => listSubjectTargets({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSubjectTargets>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSubjectTargetsQueryResult = NonNullable<Awaited<ReturnType<typeof listSubjectTargets>>>
+export type ListSubjectTargetsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List all subject weekly targets
+ */
+
+export function useListSubjectTargets<TData = Awaited<ReturnType<typeof listSubjectTargets>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSubjectTargets>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSubjectTargetsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpsertSubjectTargetUrl = () => {
+
+
+
+
+  return `/api/subject-targets`
+}
+
+/**
+ * @summary Create or update a subject weekly target
+ */
+export const upsertSubjectTarget = async (subjectTargetInput: SubjectTargetInput, options?: RequestInit): Promise<SubjectTarget> => {
+
+  return customFetch<SubjectTarget>(getUpsertSubjectTargetUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      subjectTargetInput,)
+  }
+);}
+
+
+
+
+export const getUpsertSubjectTargetMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof upsertSubjectTarget>>, TError,{data: BodyType<SubjectTargetInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof upsertSubjectTarget>>, TError,{data: BodyType<SubjectTargetInput>}, TContext> => {
+
+const mutationKey = ['upsertSubjectTarget'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof upsertSubjectTarget>>, {data: BodyType<SubjectTargetInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  upsertSubjectTarget(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpsertSubjectTargetMutationResult = NonNullable<Awaited<ReturnType<typeof upsertSubjectTarget>>>
+    export type UpsertSubjectTargetMutationBody = BodyType<SubjectTargetInput>
+    export type UpsertSubjectTargetMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Create or update a subject weekly target
+ */
+export const useUpsertSubjectTarget = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof upsertSubjectTarget>>, TError,{data: BodyType<SubjectTargetInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof upsertSubjectTarget>>,
+        TError,
+        {data: BodyType<SubjectTargetInput>},
+        TContext
+      > => {
+      return useMutation(getUpsertSubjectTargetMutationOptions(options));
+    }
+
+export const getGetWeeklyProgressUrl = () => {
+
+
+
+
+  return `/api/subject-targets/weekly-progress`
+}
+
+/**
+ * @summary Get weekly chapter completion progress per subject
+ */
+export const getWeeklyProgress = async ( options?: RequestInit): Promise<WeeklyProgressSummary> => {
+
+  return customFetch<WeeklyProgressSummary>(getGetWeeklyProgressUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetWeeklyProgressQueryKey = () => {
+    return [
+    `/api/subject-targets/weekly-progress`
+    ] as const;
+    }
+
+
+export const getGetWeeklyProgressQueryOptions = <TData = Awaited<ReturnType<typeof getWeeklyProgress>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getWeeklyProgress>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetWeeklyProgressQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWeeklyProgress>>> = ({ signal }) => getWeeklyProgress({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWeeklyProgress>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetWeeklyProgressQueryResult = NonNullable<Awaited<ReturnType<typeof getWeeklyProgress>>>
+export type GetWeeklyProgressQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get weekly chapter completion progress per subject
+ */
+
+export function useGetWeeklyProgress<TData = Awaited<ReturnType<typeof getWeeklyProgress>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getWeeklyProgress>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetWeeklyProgressQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetTestErrorStatsUrl = () => {
+
+
+
+
+  return `/api/tests/error-stats`
+}
+
+/**
+ * @summary Get error type statistics grouped by month
+ */
+export const getTestErrorStats = async ( options?: RequestInit): Promise<ErrorStat[]> => {
+
+  return customFetch<ErrorStat[]>(getGetTestErrorStatsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTestErrorStatsQueryKey = () => {
+    return [
+    `/api/tests/error-stats`
+    ] as const;
+    }
+
+
+export const getGetTestErrorStatsQueryOptions = <TData = Awaited<ReturnType<typeof getTestErrorStats>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTestErrorStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTestErrorStatsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTestErrorStats>>> = ({ signal }) => getTestErrorStats({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTestErrorStats>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTestErrorStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getTestErrorStats>>>
+export type GetTestErrorStatsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get error type statistics grouped by month
+ */
+
+export function useGetTestErrorStats<TData = Awaited<ReturnType<typeof getTestErrorStats>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTestErrorStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTestErrorStatsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getGetDailyQuoteUrl = () => {
+
+
+
+
+  return `/api/quote`
+}
+
+/**
+ * @summary Get today's motivational quote
+ */
+export const getDailyQuote = async ( options?: RequestInit): Promise<DailyQuote> => {
+
+  return customFetch<DailyQuote>(getGetDailyQuoteUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetDailyQuoteQueryKey = () => {
+    return [
+    `/api/quote`
+    ] as const;
+    }
+
+
+export const getGetDailyQuoteQueryOptions = <TData = Awaited<ReturnType<typeof getDailyQuote>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDailyQuote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDailyQuoteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDailyQuote>>> = ({ signal }) => getDailyQuote({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDailyQuote>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDailyQuoteQueryResult = NonNullable<Awaited<ReturnType<typeof getDailyQuote>>>
+export type GetDailyQuoteQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get today's motivational quote
+ */
+
+export function useGetDailyQuote<TData = Awaited<ReturnType<typeof getDailyQuote>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDailyQuote>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetDailyQuoteQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 
 export const getListTestsUrl = () => {
 

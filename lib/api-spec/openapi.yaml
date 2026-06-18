@@ -124,6 +124,79 @@ paths:
         "404":
           description: Not found
 
+  /subject-targets:
+    get:
+      operationId: listSubjectTargets
+      tags: [targets]
+      summary: List all subject weekly targets
+      responses:
+        "200":
+          description: List of targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubjectTarget"
+    post:
+      operationId: upsertSubjectTarget
+      tags: [targets]
+      summary: Create or update a subject weekly target
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubjectTargetInput"
+      responses:
+        "200":
+          description: Upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubjectTarget"
+
+  /subject-targets/weekly-progress:
+    get:
+      operationId: getWeeklyProgress
+      tags: [targets]
+      summary: Get weekly chapter completion progress per subject
+      responses:
+        "200":
+          description: Weekly progress
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklyProgressSummary"
+
+  /tests/error-stats:
+    get:
+      operationId: getTestErrorStats
+      tags: [tests]
+      summary: Get error type statistics grouped by month
+      responses:
+        "200":
+          description: Error stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ErrorStat"
+
+  /quote:
+    get:
+      operationId: getDailyQuote
+      tags: [quote]
+      summary: Get today's motivational quote
+      responses:
+        "200":
+          description: Quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyQuote"
+
   /tests:
     get:
       operationId: listTests
@@ -377,6 +450,87 @@ paths:
 
 components:
   schemas:
+    SubjectTarget:
+      type: object
+      required: [id, subject, weeklyTarget, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        subject:
+          type: string
+        weeklyTarget:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    SubjectTargetInput:
+      type: object
+      required: [subject, weeklyTarget]
+      properties:
+        subject:
+          type: string
+        weeklyTarget:
+          type: integer
+
+    SubjectWeeklyProgress:
+      type: object
+      required: [subject, target, completed, weekStart, weekEnd]
+      properties:
+        subject:
+          type: string
+        target:
+          type: integer
+        completed:
+          type: integer
+        weekStart:
+          type: string
+        weekEnd:
+          type: string
+
+    WeeklyProgressSummary:
+      type: object
+      required: [subjects, weekStart, weekEnd]
+      properties:
+        subjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubjectWeeklyProgress"
+        weekStart:
+          type: string
+        weekEnd:
+          type: string
+
+    ErrorStat:
+      type: object
+      required: [month, conceptualError, calculationMistake, unknown, readingError, total]
+      properties:
+        month:
+          type: string
+          description: "YYYY-MM"
+        conceptualError:
+          type: integer
+        calculationMistake:
+          type: integer
+        unknown:
+          type: integer
+        readingError:
+          type: integer
+        total:
+          type: integer
+
+    DailyQuote:
+      type: object
+      required: [text, author, date]
+      properties:
+        text:
+          type: string
+        author:
+          type: string
+        date:
+          type: string
+
     TestAnalysis:
       type: object
       required: [id, title, subject, date, revised, createdAt, updatedAt]

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { BookOpen, CheckSquare, Target, FlaskConical } from "lucide-react";
+import { BookOpen, CheckSquare, Target, FlaskConical, Sparkles } from "lucide-react";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -9,6 +9,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     { href: "/progress", label: "Progress", icon: BookOpen },
     { href: "/daily", label: "Daily Log", icon: CheckSquare },
     { href: "/tests", label: "Test Analysis", icon: FlaskConical },
+    { href: "/motivation", label: "Motivation", icon: Sparkles },
   ];
 
   return (

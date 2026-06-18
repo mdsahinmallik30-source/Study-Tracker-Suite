@@ -237,7 +237,7 @@ function ExerciseBookView({
         </div>
       )}
 
-      {Object.entries(grouped).map(([bookName, chapters]) => (
+      {(Object.entries(grouped) as [string, any[]][]).map(([bookName, chapters]) => (
         <BookFolder
           key={bookName}
           bookName={bookName}
@@ -317,7 +317,7 @@ function ChapterwiseGroup({ items, subject, category }: { items: any[]; subject:
 
   return (
     <div className="space-y-6">
-      {Object.entries(grouped).map(([chapter, parts]) => (
+      {(Object.entries(grouped) as [string, any[]][]).map(([chapter, parts]) => (
         <div key={chapter} className="border border-border rounded-md overflow-hidden">
           <div className="bg-secondary/50 px-4 py-2 font-medium flex justify-between items-center border-b border-border">
             <span className="font-semibold">{chapter}</span>

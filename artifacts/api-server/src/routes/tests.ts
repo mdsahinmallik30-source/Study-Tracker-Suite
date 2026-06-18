@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db, testAnalyses, wrongQuestions } from "@workspace/db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import {
   CreateTestBody,
   UpdateTestBody,
@@ -22,6 +22,39 @@ function serializeTest(t: typeof testAnalyses.$inferSelect) {
 function serializeQ(q: typeof wrongQuestions.$inferSelect) {
   return { ...q, createdAt: q.createdAt.toISOString() };
 }
+
+router.get("/tests/error-stats", async (_req, res) => {
+  const questions = await db
+    .select({
+      testDate: testAnalyses.date,
+      conceptualError: wrongQuestions.conceptualError,
+      calculationMistake: wrongQuestions.calculationMistake,
+      unknown: wrongQuestions.unknown,
+      readingError: wrongQuestions.readingError,
+    })
+    .from(wrongQuestions)
+    .innerJoin(testAnalyses, eq(wrongQuestions.testId, testAnalyses.id));
+
+  const byMonth: Record<string, { conceptualError: number; calculationMistake: number; unknown: number; readingError: number }> = {};
+  for (const q of questions) {
+    const month = q.testDate.slice(0, 7);
+    if (!byMonth[month]) byMonth[month] = { conceptualError: 0, calculationMistake: 0, unknown: 0, readingError: 0 };
+    if (q.conceptualError) byMonth[month].conceptualError++;
+    if (q.calculationMistake) byMonth[month].calculationMistake++;
+    if (q.unknown) byMonth[month].unknown++;
+    if (q.readingError) byMonth[month].readingError++;
+  }
+
+  const stats = Object.entries(byMonth)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, counts]) => ({
+      month,
+      ...counts,
+      total: counts.conceptualError + counts.calculationMistake + counts.unknown + counts.readingError,
+    }));
+
+  return res.json(stats);
+});
 
 router.get("/tests", async (_req, res) => {
   const rows = await db.select().from(testAnalyses).orderBy(testAnalyses.date);
